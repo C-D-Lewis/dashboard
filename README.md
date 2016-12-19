@@ -3,13 +3,18 @@
 Source code for the Dashboard app. Includes code for both the Pebble watchapp and the Android companion app.
 
 **Latest Versions** 
-Watchapp: 4.6 
-Android app: 4.7
+
+- Watchapp: 4.6 
+
+- Android app: 4.7
+
 
 **Install**
-[Appstore](https://apps.getpebble.com/en_US/application/53ec8d840c3036447e000109)
 
-[Google Play](https://play.google.com/store/apps/details?id=com.wordpress.ninedof.dashboard)
+- [Appstore](https://apps.getpebble.com/en_US/application/53ec8d840c3036447e000109)
+
+- [Google Play](https://play.google.com/store/apps/details?id=com.wordpress.ninedof.dashboard)
+
 
 > Don't try this at home! See [Dashboard API Status](https://github.com/C-D-Lewis/dashboard-api-status).
 
