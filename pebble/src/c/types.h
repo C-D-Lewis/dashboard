@@ -23,7 +23,8 @@ typedef enum {
   AppKeyIsLollipop,
   AppKeyStoragePercent,
   AppKeyQuickLaunchEnabled,
-  AppKeyQuickLaunchType
+  AppKeyQuickLaunchType,
+  AppKeyVersion
 } AppKey; // KEEP IN ORDER
 
 typedef enum {
@@ -62,7 +63,8 @@ typedef enum {
   ErrorCodeNoRoot = 0,
   ErrorCodeNoDeviceAdmin,
   ErrorCodeLockSuccess,
-  ErrorCodeDataNotEnabled
+  ErrorCodeDataNotEnabled,
+  ErrorCodeWrongVersion = 40
 } ErrorCode;
 
 typedef struct {

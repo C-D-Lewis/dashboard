@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.wordpress.ninedof.dashboard"
-    android:versionCode="38"
-    android:versionName="4.7" >
+    android:versionCode="39"
+    android:versionName="4.8" >
 
     <!-- IMPORTANT: ONLY UPGRADE TARGET SDK VERSION PAST 21 IF ALSO USING M-STYLE PERMISSIONS -->
     <uses-sdk

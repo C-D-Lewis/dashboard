@@ -26,8 +26,8 @@ public class Build {
 	public static final int
 		VERSION_CODE = 38;
 	public static final String
-		VERSION = "4.7",
-		WATCH_APP_COMPATIBLE_VERSION = "4.6";  // Most recent compatible watchapp version
+		VERSION = "4.8",
+		WATCH_APP_COMPATIBLE_VERSION = "4.8";  // Most recent compatible watchapp version
 	public static final boolean
 		RELEASE = true;  // Hide some log details like the protocol in production
 

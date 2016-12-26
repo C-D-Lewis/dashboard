@@ -118,9 +118,9 @@ public class Logger {
 	 * @return time as a String
 	 */
 	@SuppressLint("SimpleDateFormat")
-	public String getTimestamp() {
+	private String getTimestamp() {
 		Date date = new Date(System.currentTimeMillis());
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM HH:mm:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM HH:mm:ss.SSS");
 		return sdf.format(date);
 	}
 	

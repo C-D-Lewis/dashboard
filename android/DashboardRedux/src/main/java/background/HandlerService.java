@@ -33,7 +33,6 @@ import config.Build;
 import config.Keys;
 import config.Runtime;
 import util.PebbleUtils;
-import util.VersionCheck;
 
 public class HandlerService extends Service {
     //Configuration
@@ -51,13 +50,24 @@ public class HandlerService extends Service {
         Runtime.log(context, TAG, "Dashboard v" + Build.VERSION
                 + " (compatible v" + Build.WATCH_APP_COMPATIBLE_VERSION + ")", Logger.INFO);
 
-        //Version check?
-        if (PebbleUtils.hasString(dict, VersionCheck.KEY_VERSION_CHECK_VERSION)) {
-            VersionCheck.check(this, Build.WATCH_APP_UUID, dict, Build.WATCH_APP_COMPATIBLE_VERSION);
+        // Version check
+        if(PebbleUtils.hasString(dict, Keys.AppKeyVersion)) {
+            String version = dict.getString(Keys.AppKeyVersion);
+            if(!version.equals(Build.WATCH_APP_COMPATIBLE_VERSION)) {
+                Runtime.log(context, TAG, "Wrong version! Watch is at " + version, Logger.ERROR);
+
+                PebbleDictionary out = new PebbleDictionary();
+                dict.addInt32(Keys.ErrorCodeWrongVersion, 0);
+                PebbleKit.sendDataToPebble(context, Build.WATCH_APP_UUID, out);
+                Runtime.log(context, TAG, "Send wrong version key to watch app", Logger.INFO);
+                return;  // Nothing more to do here
+            }
+
+            Runtime.log(context, TAG, "Correct version: " + version, Logger.ERROR);
         }
 
         //Requesting status of all toggles?
-        else if (PebbleUtils.hasInt(dict, Keys.MessageTypeRequestAll)) {
+        if (PebbleUtils.hasInt(dict, Keys.MessageTypeRequestAll)) {
             Runtime.log(context, TAG, "Got sync all request", Logger.INFO);
             final PebbleDictionary out = new PebbleDictionary();
             out.addInt8(Keys.MessageTypeRequestAll, (byte) 1);
@@ -88,7 +98,7 @@ public class HandlerService extends Service {
                 @Override
                 public void run() {
                     try {
-                        Thread.sleep(500);  // Delay sending while we gather GSM signal callbacks
+                        Thread.sleep(300);  // Delay sending while we gather GSM signal callbacks
                                             // This could be as low as 100ms, but hard to test
                         PebbleKit.sendDataToPebble(context, Build.WATCH_APP_UUID, out);
                         Runtime.log(context, TAG, "Sent MessageTypeRequestAll response!", Logger.INFO);
