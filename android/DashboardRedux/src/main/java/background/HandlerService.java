@@ -18,6 +18,7 @@ import android.os.StatFs;
 import android.preference.PreferenceManager;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 
 import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
@@ -33,6 +34,7 @@ import config.Build;
 import config.Keys;
 import config.Runtime;
 import util.PebbleUtils;
+import util.VersionCheck;
 
 public class HandlerService extends Service {
     //Configuration
@@ -372,6 +374,11 @@ public class HandlerService extends Service {
             }
         } else {
             Runtime.log(context, TAG, "Unknown MessageType!", Logger.ERROR);
+
+            // Could be 4.7 asking for version (4.8 won't answer how it expects!)
+            PebbleDictionary response = new PebbleDictionary();
+            response.addInt32(VersionCheck.KEY_VERSION_CHECK_FAILURE, 0);
+            PebbleKit.sendDataToPebble(context, Build.WATCH_APP_UUID, response);
         }
     }
 
