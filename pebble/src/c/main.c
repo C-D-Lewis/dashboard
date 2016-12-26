@@ -2,16 +2,12 @@
 
 #include "config.h"
 
-#include  "lib/version_check/version_check.h"
-
 #include "modules/data.h"
 #include "modules/comm.h"
 #include "modules/sync_timer.h"
 
 #include "windows/splash_window.h"
 #include "windows/list_window.h"
-
-static AppTimer *s_timeout_timer;
 
 // --------------------------------- AppGlance ---------------------------------
 
@@ -102,36 +98,6 @@ static void wakeup_handler(WakeupId wakeup_id, int32_t cookie) {
   wakeup_window_push(e.type, e.state);
 }
 
-// ------------------------------- Version Check -------------------------------
-
-static void version_check_callback(bool correct_version) {
-  // We heard back!
-  if(s_timeout_timer) {
-    app_timer_cancel(s_timeout_timer);
-    s_timeout_timer = NULL;
-  }
-
-  if(correct_version) {
-    //Prepare to receive state data
-    comm_request_all();
-    sync_timer_begin(SYNC_TIMER_INTERVAL_S);  // Update regularly while open
-  } else {
-    dialog_window_push(
-      PBL_IF_ROUND_ELSE("Update\nwatchapp using the Dashboard Android app!",
-                        "Update watchapp using the Dashboard Android app!")
-    );
-    splash_window_remove_from_stack();
-  }
-}
-
-static void timeout_handler(void *context) {
-  // Last attempt didn't work, back off slightly
-  version_check(VERSION, version_check_callback);
-  s_timeout_timer = app_timer_register(1000, timeout_handler, NULL);
-
-  APP_LOG(APP_LOG_LEVEL_ERROR, "Version check timed out, retrying...");
-}
-
 static void begin_handler(void *context) {
   if(TEST) {
     test_populate_data();
@@ -143,26 +109,14 @@ static void begin_handler(void *context) {
   }
 
   // Connect to real device
-  version_check(VERSION, version_check_callback);
-  s_timeout_timer = app_timer_register(2000, timeout_handler, NULL);  // Expect failure
+  sync_timer_begin(SYNC_TIMER_INTERVAL_S);  // Update regularly while open
+  comm_request_all();                       // Response will contain everything, and use comm
+                                            // module timeout mechanism
 }
 
 // ------------------------------------ App ------------------------------------
 
-static void check_nukes() {
-  const int nuke_v4_0 = 4357896;  // Big protocol change
-  if(!persist_exists(nuke_v4_0)) {
-    persist_write_bool(nuke_v4_0, true);
-    wakeup_cancel_all();
-    const int persist_max = 300;
-    for(int i = 0; i < persist_max; i++) {
-      persist_delete(i);
-    }
-  }
-}
-
 static void init() {
-  check_nukes();
   comm_init(BUFFER_SIZE_IN, BUFFER_SIZE_OUT);
   data_init();
   wakeup_service_subscribe(wakeup_handler);

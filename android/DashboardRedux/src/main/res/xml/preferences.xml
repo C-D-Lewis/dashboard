@@ -7,6 +7,13 @@
             android:key="pref_key_version" >
         </Preference>
         <Preference
+            android:title="Open Source"
+            android:summary="https://github.com/C-D-Lewis/dashboard">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://github.com/C-D-Lewis/dashboard" />
+        </Preference>
+        <Preference
             android:summary="https://github.com/Stericson/RootTools"
             android:title="Uses RootTools" >
 

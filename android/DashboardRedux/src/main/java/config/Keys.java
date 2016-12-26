@@ -45,6 +45,7 @@ public class Keys {
         AppKeyStoragePercent = 17,
         AppKeyQuickLaunchEnabled = 18,
         AppKeyQuickLaunchType = 19,
+        AppKeyVersion = 20,
 
         ToggleTypeWifi = 0,
         ToggleTypeData = 1,
@@ -70,6 +71,7 @@ public class Keys {
 		ErrorCodeNoDeviceAdmin = 1,
         ErrorCodeLockSuccess = 2,
 		ErrorCodeDataNotEnabled = 3,
+        ErrorCodeWrongVersion = 40,  // 4 clashes with AppKeyStorageFreeGBMajor
 
 		MessageTypeRequestAll = 543,
 		MessageTypeToggle = 544;

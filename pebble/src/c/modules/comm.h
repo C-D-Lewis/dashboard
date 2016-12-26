@@ -3,6 +3,7 @@
 #include <pebble.h>
 
 #include "../types.h"
+#include "../config.h"
 
 #include "../util/test.h"
 

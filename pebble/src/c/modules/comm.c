@@ -12,6 +12,18 @@ static void inbox_received_handler(DictionaryIterator *iter, void *context) {
   int size = (int)iter->end - (int)iter->dictionary;
   if(DEBUG) APP_LOG(APP_LOG_LEVEL_DEBUG, "Dict size: %d", size);
 
+  // Wrong version gate
+  if(dict_find(iter, ErrorCodeWrongVersion) != NULL) {
+    APP_LOG(APP_LOG_LEVEL_ERROR, "Wrong version error!");
+
+    dialog_window_push(
+      PBL_IF_ROUND_ELSE("Update\nwatchapp using the Dashboard Android app!",
+                        "Update watchapp using the Dashboard Android app!")
+    );
+    splash_window_remove_from_stack();
+    return;
+  }
+
   // Process the incoming update
   if(dict_find(iter, MessageTypeRequestAll) != NULL) {
     data_set_gsm_name(dict_find(iter, AppKeyGSMName)->value->cstring);
@@ -111,7 +123,7 @@ static void inbox_received_handler(DictionaryIterator *iter, void *context) {
 }
 
 static void timeout_handler(void *context) {
-  APP_LOG(APP_LOG_LEVEL_ERROR, "Retrying...");
+  APP_LOG(APP_LOG_LEVEL_ERROR, "Timed out. Retrying...");
   comm_request_all();
 }
 
@@ -181,6 +193,9 @@ void comm_request_all() {
 
   const int dummy = 0;
   dict_write_int(iter, MessageTypeRequestAll, &dummy, sizeof(int), true);
+
+  // Add version instead of version_check library
+  dict_write_cstring(iter, AppKeyVersion, VERSION);
 
   result = app_message_outbox_send();
   if(result != APP_MSG_OK) {

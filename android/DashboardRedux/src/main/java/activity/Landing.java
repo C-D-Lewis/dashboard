@@ -95,14 +95,15 @@ public class Landing extends FragmentActivity {
 			/**
 			 * RELEASE CHECKLIST!!
 			 * - Android app version numbers MANIFEST & Build.java
-			 * - Watchapp version numbers APPINFO.json & config.H
+			 * - Watchapp version numbers package.json & config.h
 			 * - APP_VERSIONS.JSON .dashboard & .dashboardnews
 			 * - Check asset .pbw is up to date!!
 			 */
 	
 			// Show changelog
 			UserInterface.showDialog(this, "What's New" + " (v" + Build.VERSION + ")\n", ""
-                    + "- Attempt to fix long sync time on Pebble 2.\n"
+                    + "- Improve initial sync time.\n"
+                    + "- Add link to source code in the About page.\n"
 					, "Done",
 					new DialogInterface.OnClickListener() {
 	

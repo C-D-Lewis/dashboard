@@ -1,14 +1,12 @@
 package util;
 
+import java.util.UUID;
+
 import android.content.Context;
+import android.util.Log;
 
 import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
-
-import java.util.UUID;
-
-import cl_toolkit.Logger;
-import config.Runtime;
 
 /**
  * Check watchapp version against a known compatible version on Android
@@ -16,7 +14,6 @@ import config.Runtime;
  * 2. On reception of that dictionary, call check() below to issue response and trigger callback
  * 
  * @author Chris Lewis
- * Repo: https://github.com/C-D-Lewis/pebble-version-check
  */
 public class VersionCheck {
 	
@@ -34,28 +31,23 @@ public class VersionCheck {
 	 * @param dict			Incoming dictionary
 	 * @param localVersion	Compatible version with this Android app version
 	 */
-	public static boolean check(Context context, UUID uuid, PebbleDictionary dict, String localVersion) {
+	public static void check(Context context, UUID uuid, PebbleDictionary dict, String localVersion) {
 		if(dict.getString(KEY_VERSION_CHECK_VERSION) != null) {
 			String remoteVersion = dict.getString(KEY_VERSION_CHECK_VERSION).toString();
-            boolean success = localVersion.equals(remoteVersion);
 			
 			//Let the watch know
 			PebbleDictionary response = new PebbleDictionary();
 			
-			if (success) {
-                response.addInt32(KEY_VERSION_CHECK_SUCCESS, 0);
-				Runtime.log(context, TAG, "Version check passed!", Logger.INFO);
-            } else {
-                response.addInt32(KEY_VERSION_CHECK_FAILURE, 0);
-				Runtime.log(context, TAG, "Version check failed! Got local: " + localVersion + " remote: " + remoteVersion, Logger.ERROR);
+			if(localVersion.equals(remoteVersion)) {
+				response.addInt32(KEY_VERSION_CHECK_SUCCESS, 0);
+				Log.d(TAG, "Version check passed!");
+			} else {
+				response.addInt32(KEY_VERSION_CHECK_FAILURE, 0);
+				Log.d(TAG, "Version check failed!");
 			}
-
+			
 			PebbleKit.sendDataToPebble(context, uuid, response);
-            return success;
 		}
-
-        // Not present, ignore
-        return false;
 	}
 
 }
