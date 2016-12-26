@@ -2,7 +2,7 @@
 
 #include <pebble.h>
 
-#define TEST  true  // Use local mock data
+#define TEST  false  // Use local mock data
 #define DEBUG false
 
 #define VERSION "4.8"
