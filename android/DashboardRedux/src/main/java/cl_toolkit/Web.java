@@ -30,7 +30,6 @@ public class Web {
 			String buffer = br.readLine();
 			while(buffer != null) {
 				builder.append(buffer);
-
 				buffer = br.readLine();
 			}
 

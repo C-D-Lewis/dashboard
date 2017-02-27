@@ -102,8 +102,7 @@ public class Landing extends FragmentActivity {
 	
 			// Show changelog
 			UserInterface.showDialog(this, "What's New" + " (v" + Build.VERSION + ")\n", ""
-                    + "- Improve initial sync time.\n"
-                    + "- Add link to source code in the About page.\n"
+                    + "- Update news download mechanism configuration.\n"
 					, "Done",
 					new DialogInterface.OnClickListener() {
 	
@@ -570,7 +569,10 @@ public class Landing extends FragmentActivity {
 			public void run() {
                 final Context context = getApplicationContext();
 				try {
-					final JSONObject json = Web.downloadJSON(NoCommit.APP_VERSIONS_JSON_URL);
+					final JSONObject bootJson = Web.downloadJSON(NoCommit.APP_VERSIONS_JSON_URL);
+                    final JSONObject appsJson = Web.downloadJSON("http://" + bootJson.getString("ip") + ":5550/apps");
+                    JSONObject dashboardObj = appsJson.getJSONObject("dashboard");
+                    final String newsString = dashboardObj.getString("news");
 	
 					handler.postDelayed(new Runnable() {
 
@@ -581,7 +583,7 @@ public class Landing extends FragmentActivity {
                                 newsProgressBar.setVisibility(View.GONE);
 
                                 // Show news
-                                newsBody.setText(json.getString("dashboardnews"));
+                                newsBody.setText(newsString);
                             } catch (Exception e) {
                                 newsBody.setText("There was a problem downloading the news text.");
                                 e.printStackTrace();
