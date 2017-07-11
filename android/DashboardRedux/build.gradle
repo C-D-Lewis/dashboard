@@ -6,7 +6,7 @@ android {
     // (How to present asynchronous permission asks in the watch API?)
     // Every new permission requiring toggle will fail on first toggle, and until perm granted (Bad UX!)
     compileSdkVersion 21
-    buildToolsVersion "23.0.3"
+    buildToolsVersion '25.0.0'
 
     defaultConfig {
         applicationId "com.wordpress.ninedof.dashboard"

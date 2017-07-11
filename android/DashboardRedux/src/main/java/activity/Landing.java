@@ -569,8 +569,7 @@ public class Landing extends FragmentActivity {
 			public void run() {
                 final Context context = getApplicationContext();
 				try {
-					final JSONObject bootJson = Web.downloadJSON(NoCommit.APP_VERSIONS_JSON_URL);
-                    final JSONObject appsJson = Web.downloadJSON("http://" + bootJson.getString("ip") + ":5550/apps");
+					final JSONObject appsJson = Web.downloadJSON(NoCommit.APP_VERSIONS_JSON_URL);
                     JSONObject dashboardObj = appsJson.getJSONObject("dashboard");
                     final String newsString = dashboardObj.getString("news");
 	

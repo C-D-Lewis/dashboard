@@ -434,7 +434,7 @@ public class HandlerService extends Service {
     }
 
     private void addWifiName(PebbleDictionary out) {
-        WifiManager wifiMgr = (WifiManager) getApplication().getSystemService(Context.WIFI_SERVICE);
+        WifiManager wifiMgr = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         WifiInfo wifiInfo = wifiMgr.getConnectionInfo();
         String name = wifiInfo.getSSID();
         name = name.replace("\"", "");
