@@ -102,7 +102,8 @@ public class Landing extends FragmentActivity {
 	
 			// Show changelog
 			UserInterface.showDialog(this, "What's New" + " (v" + Build.VERSION + ")\n", ""
-                    + "- Update news download mechanism configuration.\n"
+                    + "- Add clearer explanation of use of Device Administrator permission when enabling from the main configuration page.\n"
+                    + "- Minor layout improvements.\n"
 					, "Done",
 					new DialogInterface.OnClickListener() {
 	
@@ -171,29 +172,27 @@ public class Landing extends FragmentActivity {
         // Device Admin
         adminSwitch = (Switch)findViewById(R.id.admin_switch);
         adminSwitch.setChecked(prefs.getBoolean(Keys.PREF_KEY_ADMIN, false));
-        adminSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        adminSwitch.setOnClickListener(new OnClickListener() {
 
-			@Override
-			public void onCheckedChanged(CompoundButton compoundButton, boolean newState) {
-				if (newState && !prefs.getBoolean(Keys.PREF_KEY_ADMIN, false)) {
-					// Is not, request admin
-					Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
-					intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, new ComponentName(context, DeviceAdmin.class));
-					intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "Device admin status is required for Lock Screen toggle.");
-					startActivityForResult(intent, ADMIN_RESULT);
-				} else {
-					//Is, revoke!
-					DevicePolicyManager man = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
-					man.removeActiveAdmin(new ComponentName(context, DeviceAdmin.class));
-					Toast.makeText(context, "Device Admin status removed", Toast.LENGTH_SHORT).show();
+            @Override
+            public void onClick(View view) {
+                final boolean newState = adminSwitch.isChecked();
+                adminSwitch.setChecked(false);
+                if (newState && !prefs.getBoolean(Keys.PREF_KEY_ADMIN, false)) {
+                    // Is not, request admin
+                    requestDeviceAdmin();
+                } else {
+                    //Is, revoke!
+                    DevicePolicyManager man = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+                    man.removeActiveAdmin(new ComponentName(context, DeviceAdmin.class));
+                    Toast.makeText(context, "Device Administrator status removed", Toast.LENGTH_SHORT).show();
 
-					SharedPreferences.Editor ed = PreferenceManager.getDefaultSharedPreferences(context).edit();
-					ed.putBoolean(Keys.PREF_KEY_ADMIN, false);
-					ed.commit();
-				}
-			}
-
-		});
+                    SharedPreferences.Editor ed = PreferenceManager.getDefaultSharedPreferences(context).edit();
+                    ed.putBoolean(Keys.PREF_KEY_ADMIN, false);
+                    ed.commit();
+                }
+            }
+        });
 
 		// Animate news card
         newsProgressBar = (ProgressBar)findViewById(R.id.news_progress_bar);
@@ -386,6 +385,33 @@ public class Landing extends FragmentActivity {
 
         }, 800);
 	}
+
+	private void requestDeviceAdmin() {
+        final Context context = getApplicationContext();
+        UserInterface.showDialog(this, "Device Administrator Required",
+                "In order to enable Lock Screen functionality, the following Device Administrator policies are required:\n\n"
+                        + "Lock the screen: Required to lock the screen when the corresponding watchapp action is chosen.\n\n"
+                        + "Permission will be requested on the next screen. Please grant the permission to enable the Lock Screen functionality.",
+                "OK", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+                        intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, new ComponentName(context, DeviceAdmin.class));
+                        intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "Device Administrator policy 'Lock the screen' is required for Lock Screen toggle functionality.");
+                        startActivityForResult(intent, ADMIN_RESULT);
+                        dialogInterface.dismiss();
+                    }
+                },
+                "Cancel", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                }
+        );
+    }
 
     /**
      * http://stackoverflow.com/a/29697808
@@ -661,11 +687,11 @@ public class Landing extends FragmentActivity {
                 // The user elected to enable Device Admin for Dashboard to enable the Lock Phone toggle
                 if (resultCode == Activity.RESULT_OK) {
                     ed.putBoolean(Keys.PREF_KEY_ADMIN, true);
-                    Toast.makeText(context, "Device admin status obtained!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Device Administrator status obtained", Toast.LENGTH_SHORT).show();
                     adminSwitch.setChecked(true);
                 } else {
                     ed.putBoolean(Keys.PREF_KEY_ADMIN, false);
-                    Toast.makeText(context, "Failed to get device admin status!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Did not get Device Administrator status", Toast.LENGTH_SHORT).show();
                     adminSwitch.setChecked(false);
                 }
                 break;

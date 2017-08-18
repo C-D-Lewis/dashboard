@@ -3,7 +3,7 @@
     
     <style name="AppTheme" parent="android:Theme.Material.Light.DarkActionBar">
         <item name="android:colorPrimary">@color/main_colour</item>
-        <item name="android:statusBarColor">@color/main_colour_dark</item>
+        <item name="android:statusBarColor">@color/main_colour</item>
         <item name="android:navigationBarColor">@color/main_colour</item>
         <item name="android:colorAccent">@color/main_colour_dark</item>
 
