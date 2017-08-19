@@ -96,14 +96,15 @@ public class Landing extends FragmentActivity {
 			 * RELEASE CHECKLIST!!
 			 * - Android app version numbers MANIFEST & Build.java
 			 * - Watchapp version numbers package.json & config.h
-			 * - APP_VERSIONS.JSON .dashboard & .dashboardnews
-			 * - Check asset .pbw is up to date!!
+			 * - apps.json.dashboard text
+			 * - Check asset .pbw is available and up to date
+             * - Check no_commit.NoCommit is available
 			 */
 	
 			// Show changelog
 			UserInterface.showDialog(this, "What's New" + " (v" + Build.VERSION + ")\n", ""
-                    + "- Add clearer explanation of use of Device Administrator permission when enabling from the main configuration page.\n"
-                    + "- Minor layout improvements.\n"
+                    + "- Fix offline install of watchapp pbw.\n"
+                    + "- Fix some minor grammatical errors."
 					, "Done",
 					new DialogInterface.OnClickListener() {
 	
@@ -389,16 +390,16 @@ public class Landing extends FragmentActivity {
 	private void requestDeviceAdmin() {
         final Context context = getApplicationContext();
         UserInterface.showDialog(this, "Device Administrator Required",
-                "In order to enable Lock Screen functionality, the following Device Administrator policies are required:\n\n"
-                        + "Lock the screen: Required to lock the screen when the corresponding watchapp action is chosen.\n\n"
-                        + "Permission will be requested on the next screen. Please grant the permission to enable the Lock Screen functionality.",
+                "In order to enable Lock Phone functionality, the following Device Administrator policies are required:\n\n"
+                        + "Lock the screen: Required to lock the phone when the corresponding watchapp action is chosen.\n\n"
+                        + "Permission will be requested on the next screen. Please grant the permission to enable the Lock Phone functionality.",
                 "OK", new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
                         intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, new ComponentName(context, DeviceAdmin.class));
-                        intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "Device Administrator policy 'Lock the screen' is required for Lock Screen toggle functionality.");
+                        intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "Device Administrator policy 'Lock the screen' is required for Lock Phone toggle functionality.");
                         startActivityForResult(intent, ADMIN_RESULT);
                         dialogInterface.dismiss();
                     }
