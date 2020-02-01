@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 28
 
     defaultConfig {
         applicationId "com.wordpress.ninedof.dashboard"
         minSdkVersion 18
-        targetSdkVersion 26
+        targetSdkVersion 28
     }
 
     buildTypes {

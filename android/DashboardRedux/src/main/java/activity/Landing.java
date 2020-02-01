@@ -104,6 +104,7 @@ public class Landing extends FragmentActivity {
 			// Show changelog
 			UserInterface.showDialog(this, "What's New" + " (v" + Build.VERSION + ")\n", ""
                     + "- Remove donation button as per Google guidelines.\n"
+                    + "- Remove root data toggle (result of Google guidelines)."
 					, "Done",
 					new DialogInterface.OnClickListener() {
 	
