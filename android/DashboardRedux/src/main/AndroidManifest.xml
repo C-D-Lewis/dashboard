@@ -5,9 +5,7 @@
     android:versionName="4.12" >
 
     <!-- IMPORTANT: ONLY UPGRADE TARGET SDK VERSION PAST 21 IF ALSO USING M-STYLE PERMISSIONS -->
-    <uses-sdk
-        android:minSdkVersion="18"
-        android:targetSdkVersion="21" />
+    <uses-sdk android:targetSdkVersion="21" />
 
     <!-- Wifi toggle -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
