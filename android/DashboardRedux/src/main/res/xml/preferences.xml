@@ -13,14 +13,14 @@
                 android:action="android.intent.action.VIEW"
                 android:data="https://github.com/C-D-Lewis/dashboard" />
         </Preference>
-        <Preference
-            android:summary="https://github.com/Stericson/RootTools"
-            android:title="Uses RootTools" >
+<!--        <Preference-->
+<!--            android:summary="https://github.com/Stericson/RootTools"-->
+<!--            android:title="Uses RootTools" >-->
 
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:data="https://github.com/Stericson/RootTools" />
-        </Preference>
+<!--            <intent-->
+<!--                android:action="android.intent.action.VIEW"-->
+<!--                android:data="https://github.com/Stericson/RootTools" />-->
+<!--        </Preference>-->
     </PreferenceCategory>
     <PreferenceCategory android:title="Feedback" >
         <Preference
@@ -60,31 +60,23 @@
                 android:action="android.intent.action.VIEW"
                 android:data="http://ninedof.wordpress.com" />
         </Preference>
-        <Preference
-            android:icon="@drawable/paypal"
-            android:summary="Found this app useful? Donations greatly appreciated!"
-            android:title="Donate to Developer" >
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:data="https://www.paypal.me/chrislewis1" />
-        </Preference>
     </PreferenceCategory>
 
     <!-- Additional root related items -->
-    <PreferenceCategory
-        android:key="pref_category_advanced"
-        android:title="Advanced Settings" >
-        <CheckBoxPreference
-            android:title="Enable Data toggle (requires root)"
-            android:summary="As of Android 5.0 (Lollipop), the Data toggle requires root in order to function, and may not work on all devices. This is an Android platform limitation. Sorry!\n\nUse the test below to see if Dashboard can use root on this device."
-            android:key="pref_key_data_enabled"
-            android:defaultValue="false">
-        </CheckBoxPreference>
-        <Preference
-            android:title="Test Root Access"
-            android:summary="Tap this to test root access for Dashboard. If prompted, please grant access!"
-            android:key="pref_key_root_access">
-        </Preference>
-    </PreferenceCategory>
+<!--    <PreferenceCategory-->
+<!--        android:key="pref_category_advanced"-->
+<!--        android:title="Advanced Settings" >-->
+<!--        <CheckBoxPreference-->
+<!--            android:title="Enable Data toggle (requires root)"-->
+<!--            android:summary="As of Android 5.0 (Lollipop), the Data toggle requires root in order to function, and may not work on all devices. This is an Android platform limitation. Sorry!\n\nUse the test below to see if Dashboard can use root on this device."-->
+<!--            android:key="pref_key_data_enabled"-->
+<!--            android:defaultValue="false">-->
+<!--        </CheckBoxPreference>-->
+<!--        <Preference-->
+<!--            android:title="Test Root Access"-->
+<!--            android:summary="Tap this to test root access for Dashboard. If prompted, please grant access!"-->
+<!--            android:key="pref_key_root_access">-->
+<!--        </Preference>-->
+<!--    </PreferenceCategory>-->
 
 </PreferenceScreen>

@@ -103,8 +103,7 @@ public class Landing extends FragmentActivity {
 	
 			// Show changelog
 			UserInterface.showDialog(this, "What's New" + " (v" + Build.VERSION + ")\n", ""
-                    + "- Fix offline install of watchapp pbw.\n"
-                    + "- Fix some minor grammatical errors."
+                    + "- Remove donation button as per Google guidelines.\n"
 					, "Done",
 					new DialogInterface.OnClickListener() {
 	
