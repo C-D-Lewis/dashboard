@@ -1,5 +1,6 @@
 package activity;
 
+import android.Manifest;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.admin.DevicePolicyManager;
@@ -8,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
 import android.media.AudioManager;
@@ -17,8 +19,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.widget.CardView;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
+import androidx.cardview.widget.CardView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -64,6 +69,8 @@ public class Landing extends FragmentActivity {
     public static final int
         ADMIN_RESULT = 38,           // Result of Device Admin dialog
         RESULT_RINGTONE_URI = 3265;  // Result from ringtone picker
+
+    private static int REQUEST_LOCATION = 1;
 
     private MediaPlayer mediaPlayer;
 
@@ -385,6 +392,13 @@ public class Landing extends FragmentActivity {
             }
 
         }, 800);
+
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+        {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    REQUEST_LOCATION);
+        }
 	}
 
 	private void requestDeviceAdmin() {

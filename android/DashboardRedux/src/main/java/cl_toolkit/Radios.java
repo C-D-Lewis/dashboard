@@ -1,11 +1,16 @@
 package cl_toolkit;
 
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
+import android.os.Handler;
+import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
 import android.util.Log;
 
 import java.lang.reflect.Method;
@@ -118,13 +123,23 @@ public class Radios {
 		try {
 			WifiManager manager = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
 			
-			if(newState) {
-				//Disable WiFi first
-				manager.setWifiEnabled(false);
-			}
 
-			Method method = manager.getClass().getMethod("setWifiApEnabled", WifiConfiguration.class, boolean.class);
-			return (Boolean)method.invoke(manager, getWifiApConfiguration(context), newState);
+			if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.O) {
+				if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+				{
+					return setHotspot(manager, newState);
+				} else {
+					return false;
+				}
+			} else {
+				if(newState) {
+					//Disable WiFi first
+					manager.setWifiEnabled(false);
+				}
+
+				Method method = manager.getClass().getMethod("setWifiApEnabled", WifiConfiguration.class, boolean.class);
+				return (Boolean) method.invoke(manager, getWifiApConfiguration(context), newState);
+			}
 		} catch (Exception e) {
 			Log.e(TAG, "Error setting Wifi AP state");
 			e.printStackTrace();
@@ -184,4 +199,36 @@ public class Radios {
 		}
 	}
 
+	@RequiresApi(android.os.Build.VERSION_CODES.O)
+	private static boolean setHotspot(WifiManager wifiManager, boolean state) {
+		if (state) {
+			wifiManager.startLocalOnlyHotspot(new WifiManager.LocalOnlyHotspotCallback() {
+				@Override
+				public void onStarted(WifiManager.LocalOnlyHotspotReservation reservation) {
+					super.onStarted(reservation);
+					Log.v(TAG, "WiFi AP Started");
+				}
+
+				@Override
+				public void onStopped() {
+					super.onStopped();
+					Log.v(TAG, "WiFi AP Stopped");
+				}
+
+				@Override
+				public void onFailed(int reason) {
+					super.onFailed(reason);
+					Log.v(TAG, "WiFi AP failed to start");
+				}
+			}, new Handler());
+		} else {
+			try {
+				Method method = wifiManager.getClass().getDeclaredMethod("cancelLocalOnlyHotspotRequest");
+				method.invoke(wifiManager);
+			} catch (Exception e) {
+				Log.v(TAG, "WiFi AP failed to stop");
+			}
+		}
+		return true;
+	}
 }

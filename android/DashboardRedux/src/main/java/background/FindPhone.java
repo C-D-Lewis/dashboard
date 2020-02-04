@@ -1,5 +1,8 @@
 package background;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -10,7 +13,8 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
-import android.support.v4.app.NotificationCompat;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.NotificationCompat;
 import android.widget.Toast;
 
 import com.getpebble.android.kit.PebbleKit;
@@ -67,14 +71,19 @@ public class FindPhone extends Service {
 		} else {
 			Runtime.log(context, TAG, "Starting find phone...", Logger.INFO);
             String message = "Playing Find Phone sound. Use Find Phone toggle again to cancel.";
+            String channelId = "find_phone_notification";
 
-			// Start
-			NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-			builder.setSmallIcon(R.drawable.ic_launcher_notif);
-            builder.setContentTitle("Dashboard");
-            builder.setStyle(new NotificationCompat.BigTextStyle().bigText(message));
-            builder.setColor(getResources().getColor(R.color.main_colour));
-			startForeground(ID_FIND_PHONE, builder.build());
+            if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.O) {
+                createNotificationChannel(channelId, "Find My Phone");
+            } else {
+				// Start
+				NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId);
+				builder.setSmallIcon(R.drawable.ic_launcher_notif);
+				builder.setContentTitle("Dashboard");
+				builder.setStyle(new NotificationCompat.BigTextStyle().bigText(message));
+				builder.setColor(getResources().getColor(R.color.main_colour));
+				startForeground(ID_FIND_PHONE, builder.build());
+			}
 
             // Choose user's choice or default
             String uriString = prefs.getString(Keys.PREF_KEY_FIND_PHONE_FILE, Keys.PREF_VALUE_FIND_PHONE_DEFAULT);
@@ -152,4 +161,14 @@ public class FindPhone extends Service {
 		return null;
 	}
 
+	@RequiresApi(android.os.Build.VERSION_CODES.O)
+	private String createNotificationChannel(String channelId, String channelName){
+		NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_NONE);
+		channel.setLightColor(getResources().getColor(R.color.main_colour));
+		channel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+		NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		manager.createNotificationChannel(channel);
+
+		return channelId;
+	}
 }
