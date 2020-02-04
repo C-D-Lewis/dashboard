@@ -12,7 +12,7 @@ import cl_toolkit.Storage;
 public class Runtime {
 	
 	private static Logger getLogger(Context context) {
-		return new Logger(Storage.getStorage() + "/" + Build.DEBUG_LOG_NAME, Build.DEBUG_LOG_MAX_SIZE_BYTES);
+		return new Logger(Storage.getAppStorage(context) + "/" + Build.DEBUG_LOG_NAME, Build.DEBUG_LOG_MAX_SIZE_BYTES);
 	}
 
     public static void log(Context context, String TAG, String message, String level) {
