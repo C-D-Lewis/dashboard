@@ -33,6 +33,15 @@ public class App extends Application {
 
             // DON'T CLEAR FIRST RUN FLAG, Landing.java will do this
         }
+
+        PebbleReceiver.registerReceiver(context);
     }
 
+    @Override
+    public void onTerminate() {
+        Context context = getApplicationContext();
+        PebbleReceiver.unregisterReceiver(context);
+
+        super.onTerminate();
+    }
 }

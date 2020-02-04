@@ -10,6 +10,7 @@
 
     <!-- WiFi AP toggle -->
     <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <!-- Data toggle -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -33,6 +34,9 @@
     <!-- Battery full notification hacks -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
+
+    <!-- Foregraund Service permission for Find My Phone -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:name="background.App"
