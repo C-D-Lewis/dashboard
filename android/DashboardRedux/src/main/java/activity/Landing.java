@@ -20,10 +20,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
-import androidx.cardview.widget.CardView;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -61,7 +62,6 @@ import config.Build;
 import config.Keys;
 import config.Runtime;
 import no_commit.NoCommit;
-import util.PebbleUtils;
 
 public class Landing extends FragmentActivity {
 
@@ -110,8 +110,8 @@ public class Landing extends FragmentActivity {
 	
 			// Show changelog
 			UserInterface.showDialog(this, "What's New" + " (v" + Build.VERSION + ")\n", ""
-                    + "- Remove donation button as per Google guidelines.\n"
-                    + "- Remove root data toggle (result of Google guidelines)."
+                    + "- Fixes to communication.\n"
+                    + "- Add extra location permission ask (required for Hotspot toggle)."
 					, "Done",
 					new DialogInterface.OnClickListener() {
 	
@@ -167,15 +167,21 @@ public class Landing extends FragmentActivity {
 			
 		}, 200);
         Button installButton = (Button) findViewById(R.id.button_install);
-		installButton.setOnClickListener(new OnClickListener() {
+        installButton.setOnClickListener(new OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				PebbleUtils.sideloadInstall(context, Build.WATCH_APP_PBW_NAME);
-				Toast.makeText(context, "If the Pebble Android app does not ask for confirmation, close it and try this again.", Toast.LENGTH_LONG).show();
-			}
+            @Override
+            public void onClick(View v) {
+                // Modern android doesn't allow file:// anymore :(
+//				PebbleUtils.sideloadInstall(context, Build.WATCH_APP_PBW_NAME);
+//				Toast.makeText(context, "If the Pebble Android app does not ask for confirmation, close it and try this again.", Toast.LENGTH_LONG).show();
 
-		});
+                // Show appstore instead - love live Rebble!
+                final Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("https://apps.rebble.io/en_US/application/53ec8d840c3036447e000109?query=dashboard&section=watchapps"));
+                startActivity(intent);
+            }
+
+        });
 
         // Device Admin
         adminSwitch = (Switch)findViewById(R.id.admin_switch);
