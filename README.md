@@ -8,7 +8,7 @@ See `assets/releases` for sideloadable Android and Pebble apps files.
 
 - Watchapp: 4.8
 
-- Android app: 4.14
+- Android app: 4.15
 
 
 **Install**
