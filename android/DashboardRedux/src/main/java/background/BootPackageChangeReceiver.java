@@ -33,6 +33,9 @@ public class BootPackageChangeReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        // Do our best to be alive for future background usage...
+        PebbleReceiver.launchHandlerService(context, "");
+
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         if(!prefs.getBoolean(Keys.PREF_KEY_CHARGE_NOTIFICATION_ENABLED, false)) {
             return;

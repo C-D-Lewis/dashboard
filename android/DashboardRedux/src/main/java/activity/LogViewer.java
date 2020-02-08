@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -90,6 +91,8 @@ public class LogViewer extends Activity {
                 try {
 					readFile();
 				} catch(Exception e) {
+					Log.e(TAG, e.getMessage());
+
 					//There may not be one yet
 					Runtime.log(context, TAG, "Began new log file.", Logger.INFO);
 					try {
@@ -106,7 +109,7 @@ public class LogViewer extends Activity {
 	}
 	
 	private void readFile() throws IOException {
-		File logFile = new File(Storage.getStorage() + "/" + Build.DEBUG_LOG_NAME);
+		File logFile = new File(Storage.getAppStorage(getApplicationContext()) + "/" + Build.DEBUG_LOG_NAME);
 		BufferedReader br = new BufferedReader(new FileReader(logFile));
 		String next = br.readLine();
 		StringBuilder content = new StringBuilder(Build.DEBUG_LOG_MAX_SIZE_BYTES);

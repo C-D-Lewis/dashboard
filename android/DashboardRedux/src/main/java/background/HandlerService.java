@@ -1,5 +1,9 @@
 package background;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.app.admin.DevicePolicyManager;
 import android.content.ContentResolver;
@@ -7,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -23,8 +28,11 @@ import android.util.Log;
 import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
 import com.stericson.RootTools.RootTools;
+import com.wordpress.ninedof.dashboard.R;
 
 import activity.Landing;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.NotificationCompat;
 import cl_toolkit.Logger;
 import cl_toolkit.Platform;
 import cl_toolkit.Radios;
@@ -39,6 +47,8 @@ import util.VersionCheck;
 public class HandlerService extends Service {
     //Configuration
     private final static String TAG = HandlerService.class.getName();
+
+    private static final int FOREGROUND_ID = 3489343;
 
     /**
      * See what the watch wants
@@ -65,7 +75,7 @@ public class HandlerService extends Service {
                 return;  // Nothing more to do here
             }
 
-            Runtime.log(context, TAG, "Correct version: " + version, Logger.ERROR);
+            Runtime.log(context, TAG, "Correct version: " + version, Logger.INFO);
         }
 
         //Requesting status of all toggles?
@@ -601,9 +611,49 @@ public class HandlerService extends Service {
 
     /******************************* Implements Service ********************************/
 
+    private Notification notifyBelowOreo() {
+        Intent notificationIntent = new Intent(this, Landing.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+        return new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_launcher_notif)
+                .setContentTitle("Dashboard for Pebble")
+                .setContentText("Service to allow background toggling")
+                .setContentIntent(pendingIntent)
+                .build();
+    }
+
+    @RequiresApi(android.os.Build.VERSION_CODES.O)
+    private Notification notifyAboveOreo() {
+        String channelId = Build.PACKAGE_NAME;
+        String channelName = "Dashboard Background Service";
+        NotificationChannel chan = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_NONE);
+        chan.setLightColor(Color.BLUE);
+        chan.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        assert manager != null;
+        manager.createNotificationChannel(chan);
+
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, channelId);
+        return notificationBuilder.setOngoing(true)
+            .setSmallIcon(R.drawable.ic_launcher_notif)
+            .setContentTitle("Running in foreground to allow toggling while asleep")
+            .setPriority(NotificationManager.IMPORTANCE_NONE)
+            .setCategory(Notification.CATEGORY_SERVICE)
+            .build();
+    }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Context context = getApplicationContext();
+
+        // Background apps are cached inactive after API 28 (Oreo) :(
+        Notification notification;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            notification = notifyAboveOreo();
+        } else {
+            notification = notifyBelowOreo();
+        }
+        startForeground(FOREGROUND_ID, notification);
 
         Runtime.log(context, TAG, "onStartCommand", Logger.INFO);
 
@@ -613,6 +663,11 @@ public class HandlerService extends Service {
                 String jsonData = intent.getExtras().getString("json");  // Thanks, SteveP!
                 if(!Build.RELEASE) {
                     Runtime.log(context, TAG, "Dict JSON: " + jsonData, Logger.DEBUG);
+                }
+
+                // Could be 'keep alive' type of launch...
+                if (jsonData == null || jsonData.equals("")) {
+                    return 0;
                 }
 
                 try {

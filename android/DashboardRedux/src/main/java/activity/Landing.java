@@ -54,7 +54,9 @@ import java.util.Map;
 import adapter.ToggleSelector;
 import background.BootPackageChangeReceiver;
 import background.DeviceAdmin;
+import background.HandlerService;
 import background.KeepAliveReceiver;
+import background.PebbleReceiver;
 import cl_toolkit.Logger;
 import cl_toolkit.UserInterface;
 import cl_toolkit.Web;
@@ -110,8 +112,7 @@ public class Landing extends FragmentActivity {
 	
 			// Show changelog
 			UserInterface.showDialog(this, "What's New" + " (v" + Build.VERSION + ")\n", ""
-                    + "- Fixes to communication.\n"
-                    + "- Add extra location permission ask (required for Hotspot toggle)."
+                    + "- Use foreground service to allow working in the background again.\n"
 					, "Done",
 					new DialogInterface.OnClickListener() {
 	
@@ -405,6 +406,9 @@ public class Landing extends FragmentActivity {
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     REQUEST_LOCATION);
         }
+
+        // Do our best to be alive for future background usage...
+        PebbleReceiver.launchHandlerService(context, "");
 	}
 
 	private void requestDeviceAdmin() {
