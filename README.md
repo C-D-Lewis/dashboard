@@ -2,11 +2,13 @@
 
 Source code for the Dashboard app. Includes code for both the Pebble watchapp and the Android companion app.
 
-**Latest Versions** 
+See `assets/releases` for sideloadable Android and Pebble apps files.
+
+**Latest Versions**
 
 - Watchapp: 4.8
 
-- Android app: 4.8
+- Android app: 4.14
 
 
 **Install**
