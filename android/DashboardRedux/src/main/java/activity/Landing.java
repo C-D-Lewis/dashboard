@@ -3,6 +3,7 @@ package activity;
 import android.Manifest;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -113,6 +114,8 @@ public class Landing extends FragmentActivity {
 			// Show changelog
 			UserInterface.showDialog(this, "What's New" + " (v" + Build.VERSION + ")\n", ""
                     + "- Add more ways to download the watchapp PBW file.\n"
+                    + "- Possible fix for setting Ringer toggle to Silent.\n"
+                    + "- Only use foreground service notification on Android 8 (Oreo) or above.\n"
 					, "Done",
 					new DialogInterface.OnClickListener() {
 	
@@ -411,11 +414,37 @@ public class Landing extends FragmentActivity {
 
         }, 800);
 
+        // Ask for location permission, required for Hotspot toggle
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
         {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     REQUEST_LOCATION);
+        }
+
+        // Check for DND permission, required for ringer mode silent toggle (ugh)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            if (!notificationManager.isNotificationPolicyAccessGranted()) {
+                UserInterface.showDialog(
+                    this,
+                    "Permission Required",
+                    "Do Not Disturb permission is required for the Ringer toggle to be able to set the Silent mode.\n\nPlease allow Dashboard on the next screen.", "Open DND Settings", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // https://stackoverflow.com/a/39152607
+                            Intent intent = new Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+                            startActivity(intent);
+                        }
+                    },
+                    "Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }
+                );
+            }
         }
 
         // Do our best to be alive for future background usage...

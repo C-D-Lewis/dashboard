@@ -38,6 +38,10 @@
     <!-- Foreground Service permission for Find My Phone -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
+    <!-- Ringer mode toggle -->
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
+
     <application
         android:name="background.App"
         android:allowBackup="true"

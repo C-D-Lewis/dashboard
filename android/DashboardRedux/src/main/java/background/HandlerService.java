@@ -213,6 +213,15 @@ public class HandlerService extends Service {
                 AudioManager aManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 
                 int mode = PebbleUtils.getInt(dict, Keys.AppKeyToggleRinger);
+
+                // Any mode other than silent may require unsetting DnD
+                if (mode != Keys.ToggleStateSilent) {
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                        mNotificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL);
+                    }
+                }
+
                 switch (mode) {
                     case Keys.ToggleStateLoud:
                         aManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
@@ -223,16 +232,24 @@ public class HandlerService extends Service {
                         Runtime.log(context, TAG, "Vibrate mode attempted.", Logger.INFO);
                         break;
                     case Keys.ToggleStateSilent: {
-                        // Damn you Android 5.0 Priority mode with no API!!
-                        aManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-                        int newMode = aManager.getRingerMode();   // WTF but works
-                        if(newMode != AudioManager.RINGER_MODE_SILENT) {
-                            Runtime.log(context, TAG, "New ringer mode does not match requested mode!", Logger.ERROR);
-                        } else {
-                            Runtime.log(context, TAG, "New ringer mode matched RINGER_MODE_SILENT (" + AudioManager.RINGER_MODE_SILENT + "): " + newMode, Logger.DEBUG);
+                        try {
+                            Runtime.log(context, TAG, "Silent mode attempting....", Logger.INFO);
+                            // Damn you Android 5.0 Priority mode with no API!!
+                            // Also damn you DND in Android N!
+                            // https://stackoverflow.com/questions/58044974/enable-silent-mode-in-android-without-triggering-do-not-disturb
+                            aManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                            aManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+                            int newMode = aManager.getRingerMode();   // WTF but works
+                            Runtime.log(context, TAG, "Ringer mode now " + newMode, Logger.INFO);
+                            if (newMode != AudioManager.RINGER_MODE_SILENT) {
+                                Runtime.log(context, TAG, "New ringer mode does not match requested mode!", Logger.ERROR);
+                            } else {
+                                Runtime.log(context, TAG, "New ringer mode matched RINGER_MODE_SILENT (" + AudioManager.RINGER_MODE_SILENT + "): " + newMode, Logger.DEBUG);
+                            }
+                            Runtime.log(context, TAG, "Silent mode attempted.", Logger.INFO);
+                        } catch (Exception e) {
+                            Runtime.log(context, TAG, "Error toggling silent mode: " + e.getMessage(), Logger.ERROR);
                         }
-                        aManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-                        Runtime.log(context, TAG, "Silent mode attempted.", Logger.INFO);
                     }   break;
                 }
 
@@ -611,16 +628,16 @@ public class HandlerService extends Service {
 
     /******************************* Implements Service ********************************/
 
-    private Notification notifyBelowOreo() {
-        Intent notificationIntent = new Intent(this, Landing.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-        return new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.ic_launcher_notif)
-                .setContentTitle("Dashboard for Pebble")
-                .setContentText("Service to allow background toggling")
-                .setContentIntent(pendingIntent)
-                .build();
-    }
+//    private Notification notifyBelowOreo() {
+//        Intent notificationIntent = new Intent(this, Landing.class);
+//        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+//        return new NotificationCompat.Builder(this)
+//                .setSmallIcon(R.drawable.ic_launcher_notif)
+//                .setContentTitle("Dashboard for Pebble")
+//                .setContentText("Service to allow background toggling")
+//                .setContentIntent(pendingIntent)
+//                .build();
+//    }
 
     @RequiresApi(android.os.Build.VERSION_CODES.O)
     private Notification notifyAboveOreo() {
@@ -636,7 +653,7 @@ public class HandlerService extends Service {
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, channelId);
         return notificationBuilder.setOngoing(true)
             .setSmallIcon(R.drawable.ic_launcher_notif)
-            .setContentTitle("Running in foreground to allow toggling while asleep")
+            .setContentTitle("Required foreground notification to allow background toggling.")
             .setPriority(NotificationManager.IMPORTANCE_NONE)
             .setCategory(Notification.CATEGORY_SERVICE)
             .build();
@@ -647,13 +664,9 @@ public class HandlerService extends Service {
         Context context = getApplicationContext();
 
         // Background apps are cached inactive after API 28 (Oreo) :(
-        Notification notification;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            notification = notifyAboveOreo();
-        } else {
-            notification = notifyBelowOreo();
+            startForeground(FOREGROUND_ID, notifyAboveOreo());
         }
-        startForeground(FOREGROUND_ID, notification);
 
         Runtime.log(context, TAG, "onStartCommand", Logger.INFO);
 
@@ -667,7 +680,7 @@ public class HandlerService extends Service {
 
                 // Could be 'keep alive' type of launch...
                 if (jsonData == null || jsonData.equals("")) {
-                    return 0;
+                    return Service.START_STICKY;
                 }
 
                 try {
