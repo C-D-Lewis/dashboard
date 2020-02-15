@@ -60,8 +60,9 @@
                         android:textSize="16sp"
                         android:layout_below="@id/install_title"
                         android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
                         android:paddingBottom="5dp"
-                        android:text="Each version of the Dashboard Android app comes with the correct version of the watchapp. Try reinstalling this if you experience problems."
+                        android:text="Install the watchapp from either the appstore or direct from GitHub"
                         android:textColor="#000000"
                         android:layout_height="wrap_content" />
 
@@ -73,18 +74,35 @@
                         android:paddingLeft="10dp"
                         android:paddingBottom="5dp"
                         android:textStyle="bold"
-                        android:text="Compatible with FW 4.0+/3.12+ only."
+                        android:text="Compatible with watch FW 4.0+/3.12+ only."
                         android:textColor="#000000"
                         android:layout_height="wrap_content" />
 
-                    <Button
-                        android:id="@+id/button_install"
-                        android:layout_below="@id/install_body2"
-                        android:layout_width="fill_parent"
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Install/update watchapp"
-                        android:layout_margin="5dp"
-                        />
+                        android:layout_below="@id/install_body2" >
+
+                        <Button
+                            android:id="@+id/button_install_appstore"
+                            android:layout_width="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:text="Appstore"
+                            android:layout_margin="5dp"
+                            />
+
+                        <Button
+                            android:id="@+id/button_install_github"
+                            android:layout_weight="1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="GitHub"
+                            android:layout_margin="5dp"
+                            />
+
+                    </LinearLayout>
 
                 </RelativeLayout>
 

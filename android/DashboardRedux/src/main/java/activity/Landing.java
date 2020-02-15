@@ -112,7 +112,7 @@ public class Landing extends FragmentActivity {
 	
 			// Show changelog
 			UserInterface.showDialog(this, "What's New" + " (v" + Build.VERSION + ")\n", ""
-                    + "- Use foreground service to allow working in the background again.\n"
+                    + "- Add more ways to download the watchapp PBW file.\n"
 					, "Done",
 					new DialogInterface.OnClickListener() {
 	
@@ -167,8 +167,8 @@ public class Landing extends FragmentActivity {
 			}
 			
 		}, 200);
-        Button installButton = (Button) findViewById(R.id.button_install);
-        installButton.setOnClickListener(new OnClickListener() {
+        Button installButtonAppstore = (Button) findViewById(R.id.button_install_appstore);
+        installButtonAppstore.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -178,7 +178,18 @@ public class Landing extends FragmentActivity {
 
                 // Show appstore instead - love live Rebble!
                 final Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse("https://apps.rebble.io/en_US/application/53ec8d840c3036447e000109?query=dashboard&section=watchapps"));
+                intent.setData(Uri.parse("https://apps.rebble.io/en_US/application/53ec8d840c3036447e000109?query=dashboard&section=watchapps&dev_settings=true"));
+                startActivity(intent);
+            }
+
+        });
+        Button installButtonGithub = (Button) findViewById(R.id.button_install_github);
+        installButtonGithub.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                final Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("https://github.com/C-D-Lewis/dashboard/tree/master/assets/releases"));
                 startActivity(intent);
             }
 
