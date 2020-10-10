@@ -113,9 +113,8 @@ public class Landing extends FragmentActivity {
 	
 			// Show changelog
 			UserInterface.showDialog(this, "What's New" + " (v" + Build.VERSION + ")\n", ""
-                    + "- Add more ways to download the watchapp PBW file.\n"
-                    + "- Possible fix for setting Ringer toggle to Silent.\n"
-                    + "- Only use foreground service notification on Android 8 (Oreo) or above.\n"
+                    + "- Update to Android Platform SDK 29.\n"
+                    + "- Slightly refine the required notification text for smaller devices.\n"
 					, "Done",
 					new DialogInterface.OnClickListener() {
 	

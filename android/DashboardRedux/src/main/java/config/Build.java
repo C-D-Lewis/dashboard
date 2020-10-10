@@ -8,7 +8,7 @@ import java.util.UUID;
 public class Build {
 
 	/** Android app version string */
-	public static final String VERSION = "4.16";
+	public static final String VERSION = "4.17";
 
 	/** Pebble watchapp UUID */
     public static final UUID WATCH_APP_UUID = UUID.fromString("d522bc8e-65f3-4edf-9651-05e1e4567021");

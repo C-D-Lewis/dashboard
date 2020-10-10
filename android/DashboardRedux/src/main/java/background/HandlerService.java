@@ -634,7 +634,7 @@ public class HandlerService extends Service {
 //        return new NotificationCompat.Builder(this)
 //                .setSmallIcon(R.drawable.ic_launcher_notif)
 //                .setContentTitle("Dashboard for Pebble")
-//                .setContentText("Service to allow background toggling")
+//                .setContentText("Required notification for background toggling")
 //                .setContentIntent(pendingIntent)
 //                .build();
 //    }
@@ -653,7 +653,7 @@ public class HandlerService extends Service {
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, channelId);
         return notificationBuilder.setOngoing(true)
             .setSmallIcon(R.drawable.ic_launcher_notif)
-            .setContentTitle("Required foreground notification to allow background toggling.")
+            .setContentTitle("Required notification for background toggling")
             .setPriority(NotificationManager.IMPORTANCE_NONE)
             .setCategory(Notification.CATEGORY_SERVICE)
             .build();

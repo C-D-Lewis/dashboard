@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
 
     defaultConfig {
         applicationId "com.wordpress.ninedof.dashboard"
         minSdkVersion 18
-        targetSdkVersion 28
+        targetSdkVersion 29
     }
 
     buildTypes {
@@ -21,7 +21,7 @@ android {
 dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'com.google.android.gms:play-services-location:17.0.0'
+    implementation 'com.google.android.gms:play-services-location:17.1.0'
     implementation 'com.getpebble:pebblekit:3.0.0'
     compile files('libs/RootTools-3.4.jar')
 }
