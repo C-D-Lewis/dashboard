@@ -13,7 +13,7 @@ See `assets/releases` for sideloadable Android and Pebble apps files.
 
 **Install**
 
-- [Appstore](https://apps.getpebble.com/en_US/application/53ec8d840c3036447e000109)
+- [Appstore](https://apps.rebble.io/en_US/application/53ec8d840c3036447e000109)
 
 - [Google Play](https://play.google.com/store/apps/details?id=com.wordpress.ninedof.dashboard)
 
